@@ -2,6 +2,8 @@
 
 This file provides context for Claude Code when working on this project.
 
+**📚 User Documentation:** See `docs/` directory for user-facing guides (QUICKSTART.md, SETUP_GUIDE.md, CHANGELOG.md).
+
 ## Project Overview
 
 **mt5-term** is a Terminal User Interface (TUI) for MetaTrader 5, written in Rust. It allows traders to monitor their MT5 positions, account balance, and P&L from the terminal.
@@ -45,9 +47,11 @@ notify = "6.1"        # File watching (not yet implemented)
 
 ```
 src/
-├── main.rs           # Entry point, event loop, terminal setup
-├── app.rs            # Application state management
+├── main.rs           # Entry point, setup check, subprocess management
+├── app.rs            # Application state + connection status
 ├── ui.rs             # Ratatui rendering (tables, layout, colors)
+├── config.rs         # Configuration loading/saving
+├── setup.rs          # Interactive setup wizard (CLI prompts)
 └── models/
     ├── mod.rs        # Module exports
     ├── position.rs   # Position data structure
@@ -56,11 +60,18 @@ src/
 
 python/
 ├── mt5_service.py    # Main service: polls MT5, writes JSON
-├── config.py         # Configuration (mostly unused, for future)
+├── setup.py          # Python setup wizard (deprecated - use Rust)
+├── config.py         # Configuration (mostly unused)
 └── requirements.txt  # MetaTrader5>=5.0.4
 
 data/
 └── positions.json    # Shared data file (gitignored)
+
+docs/
+├── QUICKSTART.md     # Quick start guide
+├── SETUP_GUIDE.md    # Detailed setup instructions
+├── CHANGELOG.md      # Project changelog
+└── test_connection.py # Test script for mock data
 ```
 
 ## Development Guidelines

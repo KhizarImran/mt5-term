@@ -65,7 +65,7 @@ If MT5 is not available, you can test with mock data:
 
 ```bash
 # Create mock data
-python test_connection.py
+python docs/test_connection.py
 
 # Run TUI
 cargo run --release
@@ -77,6 +77,12 @@ cargo run --release
 |-----|--------|
 | `q` / `ESC` | Quit |
 | `r` | Reload data |
+
+## Documentation
+
+- **[Quick Start Guide](docs/QUICKSTART.md)** - Get started in 5 minutes
+- **[Setup Guide](docs/SETUP_GUIDE.md)** - Detailed configuration instructions
+- **[Changelog](docs/CHANGELOG.md)** - What's new
 
 ## Development
 
