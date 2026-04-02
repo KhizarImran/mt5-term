@@ -1,165 +1,97 @@
-# MT5 Terminal - TUI
+# mt5-term
 
-A Terminal User Interface (TUI) for MetaTrader 5 written in Rust.
+A terminal user interface for MetaTrader 5, written in Rust.
+
+Monitor your trades, account balance, and positions in real-time from your terminal.
 
 ## Features
 
-- 📊 View open positions in real-time
-- 💰 Monitor account balance, equity, and margin
+- 📊 Real-time position monitoring
+- 💰 Account balance and equity tracking  
+- 🎨 Color-coded P&L (green for profit, red for loss)
 - ⚡ Lightweight and fast
-- 🎨 Color-coded profits (green/red)
 - ⌨️ Keyboard-driven interface
 
-## Prerequisites
+## Installation
 
-- **Windows** (MT5 requirement)
-- **Rust** toolchain: https://rustup.rs/
-- **Python 3.8+**: https://www.python.org/downloads/
-- **MT5 Terminal**: https://www.metatrader5.com/
-- **MinGW** (for building): Automatically installed via setup
+### Prerequisites
 
-## Quick Start
+- [Rust](https://rustup.rs/) (latest stable)
+- [Python 3.8+](https://www.python.org/downloads/)
+- [MetaTrader 5](https://www.metatrader5.com/) terminal (running and logged in)
 
-### 1. Install Dependencies
+### Setup
 
 ```bash
-# Install Python MT5 library
+# Clone the repository
+git clone <your-repo-url>
+cd mt5-term
+
+# Install Python dependencies
 pip install -r python/requirements.txt
-```
 
-### 2. Build the Project
-
-```bash
+# Build the project
 cargo build --release
 ```
 
-### 3. Run MT5 Service
+## Usage
 
-Open a terminal and run:
+### Running the TUI
+
+**Step 1:** Start the MT5 data service (in one terminal):
 
 ```bash
 python python/mt5_service.py
 ```
 
-This will connect to your MT5 terminal and export data to `data/positions.json` every 5 seconds.
-
-### 4. Run the TUI
-
-In another terminal:
+**Step 2:** Launch the TUI (in another terminal):
 
 ```bash
 cargo run --release
 ```
 
-Or run the binary directly:
+### Keyboard Shortcuts
 
-```bash
-./target/release/mt5-term.exe
-```
-
-## Usage
-
-### Keyboard Controls
-
-- `q` or `ESC` - Quit the application
-- `Tab` - Switch between views (coming soon)
-- `↑↓` - Scroll through positions (coming soon)
-
-### Current Status
-
-**Phase 1 Complete** ✅ 
-- Basic TUI skeleton
-- Window layout (header, content, footer)
-- Keyboard input handling
-
-**Phase 2 In Progress** 🚧
-- Data models for positions and account info
-- JSON file loading
-- Table display for positions
-
-**Phase 3 Planned** 📋
-- Python MT5 service integration
-- Real-time data updates
-- File watching
-
-## Project Structure
-
-```
-mt5-term/
-├── src/
-│   ├── main.rs              # Entry point
-│   ├── models/              # Data structures
-│   ├── services/            # Data loading, file watching
-│   └── widgets/             # UI components
-├── python/
-│   ├── mt5_service.py       # MT5 data exporter
-│   └── requirements.txt     # Python dependencies
-├── data/
-│   └── positions.json       # Shared data file
-└── README.md
-```
+| Key | Action |
+|-----|--------|
+| `q` / `ESC` | Quit |
+| `r` | Reload data |
 
 ## Development
 
-### Building
-
 ```bash
-# Debug build
-cargo build
-
-# Release build (optimized)
-cargo build --release
-
-# Run with cargo
+# Run in debug mode
 cargo run
 
 # Run tests
 cargo test
+
+# Format code
+cargo fmt
+
+# Lint
+cargo clippy
 ```
 
-### Note on Windows Builds
+### Architecture
 
-This project uses the GNU toolchain (`x86_64-pc-windows-gnu`) instead of MSVC to avoid Visual Studio dependencies. The build system is configured automatically via `.cargo/config.toml`.
+```
+MT5 Terminal → Python Service → JSON File → Rust TUI
+```
 
-## Troubleshooting
-
-### "MT5 initialization failed"
-
-- Ensure MT5 terminal is running
-- Check that you're logged into an MT5 account
-- Verify Python MT5 library is installed: `pip install MetaTrader5`
-
-### "No such file: positions.json"
-
-- Run the Python service first: `python python/mt5_service.py`
-- Check that `data/` directory exists
-- Verify MT5 service is connected and writing data
-
-### Build errors on Windows
-
-- Ensure MinGW is installed: `choco install mingw`
-- Restart your terminal after installing MinGW
-- Try: `rustup target add x86_64-pc-windows-gnu`
+The Python service polls MT5 every 5 seconds and writes position data to `data/positions.json`. The Rust TUI reads this file and displays it in a formatted table.
 
 ## Roadmap
 
-- [x] Phase 1: Basic TUI skeleton
-- [ ] Phase 2: Data models and display
-- [ ] Phase 3: Python MT5 integration
-- [ ] Phase 4: Live updates with file watching
-- [ ] Phase 5: Multi-tab interface
-- [ ] Phase 6: Backtest triggering
-- [ ] Phase 7: EA compilation support
-
-## Contributing
-
-This is a personal project, but suggestions and feedback are welcome!
+- [x] Basic position display
+- [x] Account info in header
+- [x] Color-coded P&L
+- [ ] Auto-refresh (file watching)
+- [ ] Multi-tab interface
+- [ ] Trade history view
+- [ ] EA compilation support
+- [ ] Backtest triggering
 
 ## License
 
 MIT
-
-## Acknowledgments
-
-- [Ratatui](https://github.com/ratatui/ratatui) - TUI framework
-- [MetaTrader5](https://pypi.org/project/MetaTrader5/) - Python MT5 API
