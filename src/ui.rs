@@ -6,7 +6,7 @@ use ratatui::{
     Frame,
 };
 
-use crate::app::App;
+use crate::app::{App, ConnectionStatus};
 
 pub fn render(app: &App, f: &mut Frame) {
     let chunks = Layout::default()
@@ -24,18 +24,61 @@ pub fn render(app: &App, f: &mut Frame) {
 }
 
 fn render_header(f: &mut Frame, area: Rect, app: &App) {
+    let connection_status = app.connection_status();
+    let (status_icon, status_color) = match connection_status {
+        ConnectionStatus::Connected => ("●", Color::Green),
+        ConnectionStatus::Disconnected => ("●", Color::Red),
+    };
+
+    let status_text = match connection_status {
+        ConnectionStatus::Connected => "Connected",
+        ConnectionStatus::Disconnected => "Disconnected",
+    };
+
+    let last_update = app
+        .last_update()
+        .map(|u| format!(" ({})", u))
+        .unwrap_or_default();
+
     let title = if let Some(data) = &app.data {
-        format!(
-            "MT5 Terminal - Balance: ${:.2} | Equity: ${:.2} | Profit: ${:.2}",
-            data.account.balance, data.account.equity, data.account.profit
-        )
+        Line::from(vec![
+            Span::styled(status_icon, Style::default().fg(status_color).add_modifier(Modifier::BOLD)),
+            Span::raw(" "),
+            Span::styled(status_text, Style::default().fg(status_color)),
+            Span::styled(last_update, Style::default().fg(Color::DarkGray)),
+            Span::raw(" | "),
+            Span::styled(
+                format!("Balance: ${:.2}", data.account.balance),
+                Style::default().fg(Color::Cyan),
+            ),
+            Span::raw(" | "),
+            Span::styled(
+                format!("Equity: ${:.2}", data.account.equity),
+                Style::default().fg(Color::Cyan),
+            ),
+            Span::raw(" | "),
+            Span::styled(
+                format!("Profit: ${:+.2}", data.account.profit),
+                Style::default().fg(if data.account.profit >= 0.0 {
+                    Color::Green
+                } else {
+                    Color::Red
+                }),
+            ),
+        ])
     } else {
-        "MT5 Terminal - No Data".to_string()
+        Line::from(vec![
+            Span::styled(status_icon, Style::default().fg(status_color).add_modifier(Modifier::BOLD)),
+            Span::raw(" "),
+            Span::styled(status_text, Style::default().fg(status_color)),
+            Span::raw(" | "),
+            Span::styled("No Data", Style::default().fg(Color::Yellow)),
+        ])
     };
 
     let header = Paragraph::new(title)
-        .block(Block::default().borders(Borders::ALL))
-        .style(Style::default().fg(Color::Cyan));
+        .block(Block::default().borders(Borders::ALL).title("MT5 Terminal"))
+        .style(Style::default());
     f.render_widget(header, area);
 }
 

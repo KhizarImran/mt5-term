@@ -18,7 +18,7 @@ Monitor your trades, account balance, and positions in real-time from your termi
 
 - [Rust](https://rustup.rs/) (latest stable)
 - [Python 3.8+](https://www.python.org/downloads/)
-- [MetaTrader 5](https://www.metatrader5.com/) terminal (running and logged in)
+- [MetaTrader 5](https://www.metatrader5.com/) terminal installed
 
 ### Setup
 
@@ -36,17 +36,38 @@ cargo build --release
 
 ## Usage
 
-### Running the TUI
+### Running the Application
 
-**Step 1:** Start the MT5 data service (in one terminal):
+Just run:
 
 ```bash
-python python/mt5_service.py
+cargo run --release
 ```
 
-**Step 2:** Launch the TUI (in another terminal):
+That's it! On first run, the setup wizard will guide you through configuration:
+
+**Setup Steps:**
+1. 🔍 Auto-detect MT5 installation path
+2. 💳 Enter MT5 account credentials (or use currently logged-in account)  
+3. ⚙️ Configure data export settings
+4. 💾 Save to `config.json`
+
+The application will then:
+- ✅ Automatically start the MT5 service
+- ✅ Launch the TUI
+- ✅ Display your trades in real-time
+
+**No need to run Python separately!**
+
+### Testing Without MT5
+
+If MT5 is not available, you can test with mock data:
 
 ```bash
+# Create mock data
+python test_connection.py
+
+# Run TUI
 cargo run --release
 ```
 
